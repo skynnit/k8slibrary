@@ -1,0 +1,40 @@
+{
+  "nodes": {
+    "k8sapi": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-mvGs7qOPtMwNEk39PQq2gZIGVlB88+QZ5hEA/EsPnaI=",
+        "type": "file",
+        "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.29/api/openapi-spec/swagger.json"
+      },
+      "original": {
+        "type": "file",
+        "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.29/api/openapi-spec/swagger.json"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1720954236,
+        "narHash": "sha256-1mEKHp4m9brvfQ0rjCca8P1WHpymK3TOr3v34ydv9bs=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "53e81e790209e41f0c1efa9ff26ff2fd7ab35e27",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "k8sapi": "k8sapi",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
