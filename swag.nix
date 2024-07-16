@@ -3,11 +3,13 @@ let
   cfg = config.swag;
 
   renderDocs = i:
-    lib.mapAttrs (_: v: render v) i;
+    lib.mapAttrs (n: v: render (patch v)) i;
+
+  patch = d: lib.foldl' (a: f: f a) d cfg.patches;
 
   render = ii:
   let
-    i = assert builtins.isAttrs ii; ii;
+    i = if !builtins.isAttrs ii then throw "init object assertion: ${builtins.toJSON ii}" else ii;
     content = if (i.__content or null) == null then "undefined content: ${builtins.toJSON i}" else i.__content;
     typ = if (i.__type or null) == null then throw "undefined type: ${builtins.toJSON i}" else i.__type;
   in
@@ -20,6 +22,14 @@ let
         lib.map render content
       else throw "array assertion: ${builtins.toJSON content}"
     else content;
+
+  mutate' =
+    with builtins; apiType: f: s: (
+    if isAttrs s && s ? __api_type && s.__api_type == apiType then s // { __content = f s.__content; }
+    else if isAttrs s && s ? __content then s // { __content = mutate' apiType f s.__content; }
+    else if isAttrs s then lib.mapAttrs (_: v: mutate' apiType f v) s
+    else if isList s then map (v: mutate' apiType f v) s
+    else s);
 
 in
 {
@@ -40,9 +50,21 @@ in
     output = mkOption {
       type = attrsOf attrs;
     };
+
+    lib = mkOption {
+      type = attrs;
+    };
+
+    patches = mkOption {
+      type = listOf anything;
+    };
   };
 
   config.swag.input = builtins.fromJSON (builtins.readFile "${cfg.package}/enriched.json");
 
   config.swag.output = renderDocs cfg.input;
+
+  config.swag.lib = {
+    mapAPIType = type: f: lib.mapAttrs (_: d: mutate' type f d);
+  };
 }
