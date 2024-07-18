@@ -5,6 +5,7 @@
   writeText,
   php,
   k8sapi,
+  deployName ? "rancher",
   kubernetes-version ? "1.28.0",
   values ? {},
   patchFunctions ? []
@@ -42,7 +43,7 @@ stdenv.mkDerivation rec{
   '';
 
   buildPhase = ''
-    ${yamlPHP}/bin/php ${../../swag.php} ./templated ${k8sapi} > enriched.json
+    ${yamlPHP}/bin/php ${../../swag.php} ${deployName} ./templated ${k8sapi} > enriched.json
   '';
 
   installPhase = ''

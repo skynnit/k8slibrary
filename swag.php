@@ -2,17 +2,15 @@
 $refToken = "#/definitions/";
 $refTokenLength = strlen($refToken);
 
-function doc_name($doc) {
+function doc_name($deploy, $doc) {
   $str  = '';
-  $str .= $doc["kind"];
-  $str .= isset($doc["metadata"]["namespace"]) ? $doc["metadata"]["namespace"]. '_' : '_';
+  $str  = strtolower($deploy). "-";
+  $str .= strtolower($doc["kind"]). "-";
   $str .= $doc["metadata"]["name"];
   return $str;
 }
 
 function doc_enrich($doc) {
-  //var_dump($doc); exit;
-
   global $definitions;
   global $api;
 
@@ -70,8 +68,9 @@ function property_enrich($content, $meta) {
   return $out;
 }
 
-$inputDirectory = $argv[1];
-$swaggerPath = $argv[2];
+$deployName = $argv[1];
+$inputDirectory = $argv[2];
+$swaggerPath = $argv[3];
 
 // find yaml files recursively in inputDirectory
 $files = [];
@@ -105,7 +104,7 @@ foreach ($files as $f) {
 
 $output = [];
 foreach ($docs as $doc) {
-  $output[doc_name($doc)] = doc_enrich($doc);
+  $output[doc_name($deployName, $doc)] = doc_enrich($doc);
 }
 
 echo json_encode($output);
