@@ -66,10 +66,13 @@ in
 
   config.swag.lib = rec{
     mapAPIType = type: f: lib.mapAttrs (_: d: mutate' type f d);
-    setSimpleMeta = new: mapAPIType "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta" (old: old // (lib.mapAttrs (n: v: {
+    setSimple = type: new: mapAPIType type (old: old // (lib.mapAttrs (n: v: {
       __type = "string";
       __content = v;
     }) new));
-    setNamespace = ns: setSimpleMeta { namespace = ns; };
+    setNamespace = namespace: let phrase = { inherit namespace; }; in [
+      (setSimple "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta" phrase)
+      (setSimple "io.k8s.api.rbac.v1.Subject" phrase)
+    ];
   };
 }

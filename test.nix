@@ -9,9 +9,7 @@ in
           values.hostname = "rancher.test.local";
         };
 
-        config.swag.patches = [
-          (config.swag.lib.setNamespace "cattle-system")
-        ];
+        config.swag.patches = config.swag.lib.setNamespace "cattle-system";
       })
     ];
   }).config.swag
