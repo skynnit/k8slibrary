@@ -17,10 +17,6 @@
     pkgs = import nixpkgs {
       inherit system;
       overlays = [
-        (final: prev: {
-          fetchHelm = final.callPackage ./fetchers/helm {};
-          inherit k8sapi;
-        })
         self.overlays.default
       ];
     };
@@ -31,6 +27,8 @@
     nixosModules.swag = import ./swag.nix;
 
     overlays.default = final: prev: {
+      fetchHelm = final.callPackage ./fetchers/helm {};
+      inherit k8sapi;
       manifests = {
         rancher = final.callPackage ./pkgs/rancher {};
       };
