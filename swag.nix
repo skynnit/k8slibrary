@@ -64,7 +64,12 @@ in
 
   config.swag.output = renderDocs cfg.input;
 
-  config.swag.lib = {
+  config.swag.lib = rec{
     mapAPIType = type: f: lib.mapAttrs (_: d: mutate' type f d);
+    setSimpleMeta = new: mapAPIType "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta" (old: old // (lib.mapAttrs (n: v: {
+      __type = "string";
+      __content = v;
+    }) new));
+    setNamespace = ns: setSimpleMeta { namespace = ns; };
   };
 }
