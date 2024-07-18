@@ -5,7 +5,7 @@ in
     modules = [
       flake.outputs.nixosModules.swag
       ({ config, ... }: {
-        config.swag.package = flake.charts.rancher.override {
+        config.swag.package = flake.manifests.rancher.override {
           values.hostname = "rancher.test.local";
         };
 

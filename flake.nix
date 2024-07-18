@@ -17,22 +17,24 @@
     pkgs = import nixpkgs {
       inherit system;
       overlays = [
-        (self: super: {
-          fetchHelm = self.callPackage ./fetchers/helm {};
+        (final: prev: {
+          fetchHelm = final.callPackage ./fetchers/helm {};
           inherit k8sapi;
-          charts = {
-            rancher = self.callPackage ./pkgs/rancher {};
-          };
         })
+        self.overlays.default
       ];
     };
-
-    lib = pkgs.lib; 
   in
   {
+    inherit (pkgs) manifests lib;
+
     nixosModules.swag = import ./swag.nix;
-    charts = pkgs.charts;
-    inherit lib;
+
+    overlays.default = final: prev: {
+      manifests = {
+        rancher = final.callPackage ./pkgs/rancher {};
+      };
+    };
 
     devShell.${system} = pkgs.mkShell {
       buildInputs = with pkgs; [
