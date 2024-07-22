@@ -6,6 +6,7 @@
   php,
   k8sapi,
   deployName ? "rancher",
+  deployNamespace ? "cattle-system",
   kubernetes-version ? "1.28.0",
   values ? {},
   patchFunctions ? []
@@ -35,6 +36,7 @@ stdenv.mkDerivation rec{
   unpackPhase = ''
     mkdir ./templated
     helm template \
+      --namespace ${deployNamespace} \
       -f ${writeText "${pname}-values.json" (builtins.toJSON values)} \
       --kube-version ${kubernetes-version} \
       --output-dir ./templated \
