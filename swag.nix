@@ -57,6 +57,7 @@ in
 
     patches = mkOption {
       type = listOf anything;
+      default = [];
     };
   };
 
