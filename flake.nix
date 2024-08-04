@@ -3,7 +3,9 @@
 
   inputs = {
     k8sapi = {
-      url = "https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.29/api/openapi-spec/swagger.json";
+      # 00236ae0d73d2455a2470469ed1005674f8ed61f is a random commit from the top of the kubernetes master branch
+      # just to have things pinned down and not change all the time
+      url = "https://raw.githubusercontent.com/kubernetes/kubernetes/00236ae0d73d2455a2470469ed1005674f8ed61f/api/openapi-spec/swagger.json";
       flake = false;
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";

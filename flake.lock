@@ -3,13 +3,13 @@
     "k8sapi": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-mvGs7qOPtMwNEk39PQq2gZIGVlB88+QZ5hEA/EsPnaI=",
+        "narHash": "sha256-OfOheQg03+2vW8oaC5gyIwHKUY/8HNiIo4Em4bRNNrE=",
         "type": "file",
-        "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.29/api/openapi-spec/swagger.json"
+        "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/00236ae0d73d2455a2470469ed1005674f8ed61f/api/openapi-spec/swagger.json"
       },
       "original": {
         "type": "file",
-        "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.29/api/openapi-spec/swagger.json"
+        "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/00236ae0d73d2455a2470469ed1005674f8ed61f/api/openapi-spec/swagger.json"
       }
     },
     "nixpkgs": {
