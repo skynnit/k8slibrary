@@ -32,6 +32,7 @@
       fetchHelm = final.callPackage ./fetchers/helm {};
       inherit k8sapi;
       manifests = {
+        argocd = final.callPackage ./pkgs/argocd {};
         rancher = final.callPackage ./pkgs/rancher {};
       };
     };
