@@ -2,11 +2,6 @@
 let
   cfg = config.swag;
 
-  renderDocs = i:
-    lib.mapAttrs (n: v: render (patch v)) i;
-
-  patch = d: lib.foldl' (a: f: f a) d cfg.patches;
-
   render = ii:
   let
     i = if !builtins.isAttrs ii then throw "init object assertion: ${builtins.toJSON ii}" else ii;
@@ -31,39 +26,56 @@ let
     else if isList s then map (v: mutate' apiType f v) s
     else s);
 
+  module = with lib; with lib.types; submodule ({config, lib, ...}: {
+    options = {
+      package = mkOption {
+        type = package;
+      };
+
+      patchFunctions = mkOption {
+        type = types.list;
+        default = [];
+      };
+
+      input = mkOption {
+        type = attrsOf attrs;
+      };
+
+      output = mkOption {
+        type = attrsOf attrs;
+      };
+
+      lib = mkOption {
+        type = attrs;
+      };
+
+      patches = mkOption {
+        type = listOf anything;
+        default = [];
+      };
+    };
+
+    config.input = builtins.fromJSON (builtins.readFile "${config.package}/enriched.json");
+    config.output = config.lib.renderDocs config.input;
+
+    config.lib = rec{
+      renderDocs = i:
+        lib.mapAttrs (n: v: render (patch v)) i;
+
+      patch = d: lib.foldl' (a: f: f a) d config.patches;
+    };
+  });
+
 in
 {
-  options.swag = with lib; with lib.types; {
-    package = mkOption {
-      type = package;
-    };
-
-    patchFunctions = mkOption {
-      type = types.list;
-      default = [];
-    };
-
-    input = mkOption {
-      type = attrsOf attrs;
-    };
-
-    output = mkOption {
-      type = attrsOf attrs;
-    };
-
-    lib = mkOption {
-      type = attrs;
-    };
-
-    patches = mkOption {
-      type = listOf anything;
-      default = [];
-    };
+  options.swag.apps = lib.mkOption {
+    type = lib.types.attrsOf module;
+    default = {};
   };
 
-  config.swag.input = builtins.fromJSON (builtins.readFile "${cfg.package}/enriched.json");
-
-  config.swag.output = renderDocs cfg.input;
+  options.swag.lib = lib.mkOption {
+    type = lib.types.attrs;
+  };
 
   config.swag.lib = rec{
     mapAPIType = type: f: lib.mapAttrs (_: d: mutate' type f d);
