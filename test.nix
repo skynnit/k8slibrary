@@ -5,11 +5,9 @@ in
     modules = [
       flake.outputs.nixosModules.swag
       ({ config, ... }: {
-        config.swag.apps.rancher.package = flake.manifests.rancher.override {
-          values.hostname = "rancher.test.local";
-        };
+        config.swag.apps.argocd.package = flake.manifests.argocd;
 
-        config.swag.apps.rancher.patches = config.swag.lib.setNamespace "cattle-system";
+        config.swag.apps.argocd.patches = config.swag.lib.setNamespace "argocd";
       })
     ];
-  }).config.swag.apps.rancher
+  }).config.swag.apps.argocd
