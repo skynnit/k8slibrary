@@ -3,6 +3,7 @@
   fetchHelm,
   kubernetes-helm,
   writeText,
+  yq-go,
   php,
   k8sapi,
   deployName ? "rancher",
@@ -31,7 +32,7 @@ stdenv.mkDerivation rec{
     hash = "sha256-khL7tZ9hSzY/YsU2O2KnVR8Miehl5VT6wwmcpApLTdA=";
   };
 
-  nativeBuildInputs = [ kubernetes-helm ];
+  nativeBuildInputs = [ kubernetes-helm yq-go ];
 
   unpackPhase = ''
     mkdir ./templated
@@ -45,6 +46,8 @@ stdenv.mkDerivation rec{
   '';
 
   buildPhase = ''
+    yq -o json -s '.kind + "_" + .metadata.name' templated/rancher/templates/*.yaml
+    cp *.json templated
     ${yamlPHP}/bin/php ${../../swag.php} ${deployName} ./templated ${k8sapi} > enriched.json
   '';
 

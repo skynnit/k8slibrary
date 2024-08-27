@@ -1,13 +1,15 @@
 let
   flake = builtins.getFlake (toString ./.);
-in
-  (flake.lib.evalModules {
+  output = p: _: (flake.lib.evalModules {
     modules = [
       flake.outputs.nixosModules.swag
       ({ config, ... }: {
-        config.swag.apps.argocd.package = flake.manifests.argocd;
-
-        config.swag.apps.argocd.patches = config.swag.lib.setNamespace "argocd";
+        config.swag.apps.${p} = {
+          package = flake.manifests.${p};
+          patches = config.swag.lib.setNamespace "${p}";
+        };
       })
     ];
-  }).config.swag.apps.argocd
+  }).config.swag.apps.${p}.output;
+in
+  builtins.mapAttrs output flake.outputs.manifests
