@@ -87,5 +87,9 @@ in
       (setSimple "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta" phrase)
       (setSimple "io.k8s.api.rbac.v1.Subject" phrase)
     ];
+    scale = replicas: let phrase = { replicas = assert builtins.isInt replicas; replicas; }; in [
+      (setSimple "io.k8s.api.apps.v1.DeploymentSpec" phrase)
+      (setSimple "io.k8s.api.apps.v1.StatefulSetSpec" phrase)
+    ];
   };
 }

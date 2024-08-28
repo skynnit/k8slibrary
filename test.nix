@@ -6,7 +6,10 @@ let
       ({ config, ... }: {
         config.swag.apps.${p} = {
           package = flake.manifests.${p};
-          patches = config.swag.lib.setNamespace "${p}";
+          patches =
+            config.swag.lib.setNamespace "${p}"
+            ++
+            config.swag.lib.scale 1;
         };
       })
     ];
