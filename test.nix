@@ -9,7 +9,9 @@ let
           patches =
             config.swag.lib.setNamespace "${p}"
             ++
-            config.swag.lib.scale 1;
+            config.swag.lib.scale 1
+            ++
+            config.swag.lib.addConfigMapData "argocd-cm" ({ "server.insecure" = "true"; });
         };
       })
     ];

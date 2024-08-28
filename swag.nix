@@ -18,9 +18,18 @@ let
       else throw "array assertion: ${builtins.toJSON content}"
     else content;
 
+
+  getMetadataName = queryAttrByPath ["metadata" "name"];
+
+  queryAttrByPath = path: obj:
+    let
+      subject = render obj;
+    in
+      lib.attrByPath path null subject;
+
   mutate' =
     with builtins; apiType: f: s: (
-    if isAttrs s && s ? __api_type && s.__api_type == apiType then s // { __content = f s.__content; }
+    if isAttrs s && s ? __api_type && s.__api_type == apiType then f s
     else if isAttrs s && s ? __content then s // { __content = mutate' apiType f s.__content; }
     else if isAttrs s then lib.mapAttrs (_: v: mutate' apiType f v) s
     else if isList s then map (v: mutate' apiType f v) s
@@ -78,11 +87,13 @@ in
   };
 
   config.swag.lib = rec{
-    mapAPIType = type: f: lib.mapAttrs (_: d: mutate' type f d);
-    setSimple = type: new: mapAPIType type (old: old // (lib.mapAttrs (n: v: {
+    mapAPIType = type: f: mutate' type f;
+    injectContent = new: old: old // { "__content" = old.__content // (lib.mapAttrs (n: v: {
       __type = "string";
       __content = v;
-    }) new));
+    }) new); };
+    setSimple = type: new: mapAPIType type (injectContent new);
+    setSimpleNamed = type: name: new: mapAPIType type (old: let oName = getMetadataName old; in if oName == name then injectContent new old else old);
     setNamespace = namespace: let phrase = { inherit namespace; }; in [
       (setSimple "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta" phrase)
       (setSimple "io.k8s.api.rbac.v1.Subject" phrase)
@@ -90,6 +101,9 @@ in
     scale = replicas: let phrase = { replicas = assert builtins.isInt replicas; replicas; }; in [
       (setSimple "io.k8s.api.apps.v1.DeploymentSpec" phrase)
       (setSimple "io.k8s.api.apps.v1.StatefulSetSpec" phrase)
+    ];
+    addConfigMapData = name: data: let phrase = { inherit data; }; in [
+      (setSimpleNamed "io.k8s.api.core.v1.ConfigMap" name phrase)
     ];
   };
 }
