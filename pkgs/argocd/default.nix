@@ -1,11 +1,15 @@
 {
   stdenv,
-  fetchurl,
+  fetchFromGitHub,
   php,
+  kubernetes-helm,
   yq-go,
   k8sapi,
+  writeText,
   deployName ? "argocd",
-  deployNamespace ? "argocd"
+  deployNamespace ? "argocd",
+  kubernetes-version ? "1.28.0",
+  values ? {}
 }:
 
 let
@@ -15,20 +19,23 @@ let
 in
 stdenv.mkDerivation rec{
   pname = "argocd";
-  version = "2.12.2";
+  version = "2.12.3";
+
+  src = fetchFromGitHub {
+    owner = "argoproj";
+    repo = "argo-cd";
+    rev = "v${version}";
+    hash = "sha256-XD/+alC0OZUDExXpAnxmN6zcGPrsYGxaWGU9KgdoCgM";
+  };
 
   nativeBuildInputs = [ yq-go ];
 
-  src = fetchurl {
-    url = "https://raw.githubusercontent.com/argoproj/argo-cd/v${version}/manifests/install.yaml";
-    hash = "sha256-zlOZMl7xSNPMFr4ycO+S08fgXJreVfs1ZaprysjL+cU=";
-  };
-
-  dontUnpack = true;
-
   buildPhase = ''
     mkdir templated
-    cat $src | yq -o json -s '.kind + "_" + .metadata.name'
+    cp manifests/ha/namespace-install.yaml templated
+    cp manifests/crds/*.yaml templated
+    rm templated/kustomization.yaml
+    yq -o json -s '.kind + "_" + .metadata.name + ".json"' templated/*.yaml
     cp *.json templated
     ${yamlPHP}/bin/php ${../../swag.php} ${deployName} templated/ ${k8sapi} > enriched.json
   '';
