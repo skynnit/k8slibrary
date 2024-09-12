@@ -20,7 +20,7 @@ let
 in
 stdenv.mkDerivation rec{
   pname = "rancher";
-  version = "2.8.5";
+  version = "2.9.1";
 
   src = fetchHelm {
     repo = {
@@ -29,7 +29,7 @@ stdenv.mkDerivation rec{
     };
     chart = "rancher";
     inherit version;
-    hash = "sha256-khL7tZ9hSzY/YsU2O2KnVR8Miehl5VT6wwmcpApLTdA=";
+    hash = "sha256-ipq+2pBDiwpLXTVd/QoIBfXnfnsfXzNzB+6uSmUMfAg=";
   };
 
   nativeBuildInputs = [ kubernetes-helm yq-go ];
