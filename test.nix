@@ -11,7 +11,9 @@ let
             ++
             config.swag.lib.scale 1
             ++
-            config.swag.lib.addConfigMapData "argocd-cm" ({ "server.insecure" = "true"; });
+            config.swag.lib.addConfigMapData "argocd-cm" ({ "server.insecure" = "true"; })
+            ++
+            config.swag.lib.removePodAntiAffinityRule "requiredDuringSchedulingIgnoredDuringExecution";
         };
       })
     ];

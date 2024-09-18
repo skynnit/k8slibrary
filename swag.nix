@@ -92,6 +92,9 @@ in
       __type = "string";
       __content = v;
     }) new); };
+    removePropertyPlumbing = name: obj:
+      obj // { __content = builtins.removeAttrs obj.__content [name]; };
+    removeProperty = type: property: mapAPIType type (removePropertyPlumbing property);
     setSimple = type: new: mapAPIType type (injectContent new);
     setSimpleNamed = type: name: new: mapAPIType type (old: let oName = getMetadataName old; in if oName == name then injectContent new old else old);
     setNamespace = namespace: let phrase = { inherit namespace; }; in [
@@ -104,6 +107,9 @@ in
     ];
     addConfigMapData = name: data: let phrase = { inherit data; }; in [
       (setSimpleNamed "io.k8s.api.core.v1.ConfigMap" name phrase)
+    ];
+    removePodAntiAffinityRule = rule: [
+      (removeProperty "io.k8s.api.core.v1.PodAntiAffinity" rule)
     ];
   };
 }
