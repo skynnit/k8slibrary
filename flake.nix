@@ -33,6 +33,7 @@
       inherit k8sapi;
       manifests = {
         argocd = final.callPackage ./pkgs/argocd {};
+        ceph-csi-cephfs = final.callPackage ./pkgs/ceph-csi-cephfs {};
         rancher = final.callPackage ./pkgs/rancher {};
       };
     };
