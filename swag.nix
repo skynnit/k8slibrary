@@ -75,6 +75,53 @@ let
     };
   });
 
+  ipv4Regex = "(([0-9]{1,3}\\.){3})([0-9]{1,3})";
+  ipv4Address = lib.types.strMatching ("^" + ipv4Regex + "$");
+
+  helperModules = rec{
+    hostAlias = { ... }: with lib.types; {
+      options = {
+        ip = lib.mkOption {
+          type = ipv4Address;
+        };
+
+        hostnames = lib.mkOption {
+          type = listOf str;
+        };
+      };
+    };
+    hostAliases = { config, ... }: with lib.types; {
+      options = {
+        hostAliases = lib.mkOption {
+          type = listOf (submodule hostAlias);
+        };
+
+        output = lib.mkOption {
+          type = listOf attrs;
+          internal = true;
+          readOnly = true;
+        };
+      };
+
+      config.output = map (a: {
+        __content = {
+          ip = {
+            __content = a.ip;
+            __type = "string";
+          };
+          hostnames = {
+            __content = map (h: {
+              __content = h;
+              __type = "string";
+            }) (lib.unique a.hostnames);
+            __type = "array";
+          };
+        };
+        __type = "object";
+      }) config.hostAliases;
+    };
+  };
+
 in
 {
   options.swag.apps = lib.mkOption {
@@ -88,15 +135,16 @@ in
 
   config.swag.lib = rec{
     mapAPIType = type: f: mutate' type f;
-    injectContent = new: old: old // { "__content" = old.__content // (lib.mapAttrs (n: v: {
-      __type = "string";
+    injectContent = type: new: old: old // { "__content" = old.__content // (lib.mapAttrs (n: v: {
+      __type = type;
       __content = v;
     }) new); };
     removePropertyPlumbing = name: obj:
       obj // { __content = builtins.removeAttrs obj.__content [name]; };
     removeProperty = type: property: mapAPIType type (removePropertyPlumbing property);
-    setSimple = type: new: mapAPIType type (injectContent new);
-    setSimpleNamed = type: name: new: mapAPIType type (old: let oName = getMetadataName old; in if oName == name then injectContent new old else old);
+    setSimple = type: new: mapAPIType type (injectContent "string" new);
+    setList = type: new: mapAPIType type (injectContent "array" new);
+    setSimpleNamed = type: name: new: mapAPIType type (old: let oName = getMetadataName old; in if oName == name then injectContent "string" new old else old);
     setNamespace = namespace: let phrase = { inherit namespace; }; in [
       (setSimple "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta" phrase)
       (setSimple "io.k8s.api.rbac.v1.Subject" phrase)
@@ -111,5 +159,21 @@ in
     removePodAntiAffinityRule = rule: [
       (removeProperty "io.k8s.api.core.v1.PodAntiAffinity" rule)
     ];
+    addHostAliases = input:
+      let
+        phrase = {
+          hostAliases = (lib.evalModules {
+            modules = [
+              helperModules.hostAliases
+              ({ ... }: {
+                config.hostAliases = input;
+              })
+            ];
+          }).config.output;
+        };
+      in
+        [
+          (setList "io.k8s.api.core.v1.PodSpec" phrase)
+        ];
   };
 }

@@ -13,7 +13,23 @@ let
             ++
             config.swag.lib.addConfigMapData "argocd-cm" ({ "server.insecure" = "true"; })
             ++
-            config.swag.lib.removePodAntiAffinityRule "requiredDuringSchedulingIgnoredDuringExecution";
+            config.swag.lib.removePodAntiAffinityRule "requiredDuringSchedulingIgnoredDuringExecution"
+            ++
+            (config.swag.lib.addHostAliases [{
+              ip = "10.0.0.1";
+              hostnames = [
+                "argocd.local"
+                "argocd-server.local"
+                "argocd-test.test.case"
+                "argocd-test.test.case" # This should be deduplicated
+              ];
+            }
+            {
+              ip = "10.0.0.2";
+              hostnames = [
+                "second-alias.local"
+              ];
+            }]);
         };
       })
     ];
