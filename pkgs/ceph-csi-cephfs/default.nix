@@ -37,6 +37,7 @@ stdenv.mkDerivation rec{
   unpackPhase = ''
     mkdir ./templated
     helm template \
+      --include-crds \
       --namespace ${deployNamespace} \
       -f ${writeText "${pname}-values.json" (builtins.toJSON values)} \
       --kube-version ${kubernetes-version} \
@@ -46,7 +47,7 @@ stdenv.mkDerivation rec{
   '';
 
   buildPhase = ''
-    yq -o json -s '.kind + "_" + .metadata.name' templated/ceph-csi-cephfs/templates/*.yaml
+    yq -o json -s '.kind + "_" + .metadata.name + ".json"' templated/ceph-csi-cephfs/templates/*.yaml
     cp *.json templated
     ${yamlPHP}/bin/php ${../../swag.php} ${deployName} ./templated ${k8sapi} > enriched.json
   '';
