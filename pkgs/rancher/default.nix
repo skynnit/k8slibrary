@@ -8,7 +8,7 @@
   k8sapi,
   deployName ? "rancher",
   deployNamespace ? "cattle-system",
-  kubernetes-version ? "1.28.0",
+  kubernetes-version ? "1.29.0",
   values ? {},
   patchFunctions ? []
 }:
@@ -20,7 +20,7 @@ let
 in
 stdenv.mkDerivation rec{
   pname = "rancher";
-  version = "2.9.1";
+  version = "2.9.2";
 
   src = fetchHelm {
     repo = {
@@ -29,7 +29,7 @@ stdenv.mkDerivation rec{
     };
     chart = "rancher";
     inherit version;
-    hash = "sha256-ipq+2pBDiwpLXTVd/QoIBfXnfnsfXzNzB+6uSmUMfAg=";
+    hash = "sha256-YPTdkRoh3W9vuWkVBBrIqGQJR6Zop8LxaLBHQtjpR+4=";
   };
 
   nativeBuildInputs = [ kubernetes-helm yq-go ];
