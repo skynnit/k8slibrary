@@ -37,6 +37,8 @@ stdenv.mkDerivation rec{
   unpackPhase = ''
     mkdir ./templated
     helm template \
+      --include-crds \
+      --no-hooks \
       --namespace ${deployNamespace} \
       -f ${writeText "${pname}-values.json" (builtins.toJSON values)} \
       --kube-version ${kubernetes-version} \
