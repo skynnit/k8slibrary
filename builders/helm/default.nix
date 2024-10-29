@@ -8,7 +8,8 @@
   k8sapi,
   kubernetes,
   helm ? {},
-  deploy ? {},
+  deployName,
+  deployNamespace,
   kubernetes-version,
   values ? {}
 }:
@@ -38,7 +39,7 @@ stdenv.mkDerivation rec{
     helm template \
       --include-crds \
       --no-hooks \
-      --namespace ${deploy.namespace} \
+      --namespace ${deployNamespace} \
       -f ${writeText "${pname}-values.json" (builtins.toJSON values)} \
       --kube-version ${kubernetes-version} \
       --output-dir ./templated \
@@ -49,7 +50,7 @@ stdenv.mkDerivation rec{
   buildPhase = ''
     yq -o json -s '.kind + "_" + .metadata.name + ".json"' templated/${helm.chartName}/templates/*.yaml
     cp *.json templated
-    ${yamlPHP}/bin/php ${../../swag.php} ${deploy.name} ./templated ${k8sapi} > enriched.json
+    ${yamlPHP}/bin/php ${../../swag.php} ${deployName} ./templated ${k8sapi} > enriched.json
   '';
 
   installPhase = ''

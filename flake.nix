@@ -34,10 +34,8 @@
       manifests = {
         argocd = final.callPackage ./pkgs/argocd {};
         ceph-csi-cephfs = final.callPackage ./builders/helm rec{
-          deploy = {
-            name = helm.chartName;
-            namespace = helm.chartName;
-          };
+          deployName = helm.chartName;
+          deployNamespace = helm.chartName;
           helm = {
             repoName = "ceph-csi";
             repoUrl = "https://ceph.github.io/csi-charts";
@@ -48,10 +46,8 @@
           kubernetes-version = "1.28.0";
         };
         rancher = final.callPackage ./builders/helm rec{
-          deploy = {
-            name = helm.chartName;
-            namespace = "cattle-system";
-          };
+          deployName = helm.chartName;
+          deployNamespace = "cattle-system";
           helm = {
             repoName = "rancher-stable";
             repoUrl = "https://releases.rancher.com/server-charts/stable";
