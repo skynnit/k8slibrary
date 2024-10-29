@@ -33,8 +33,34 @@
       inherit k8sapi;
       manifests = {
         argocd = final.callPackage ./pkgs/argocd {};
-        ceph-csi-cephfs = final.callPackage ./pkgs/ceph-csi-cephfs {};
-        rancher = final.callPackage ./pkgs/rancher {};
+        ceph-csi-cephfs = final.callPackage ./builders/helm rec{
+          deploy = {
+            name = helm.chartName;
+            namespace = helm.chartName;
+          };
+          helm = {
+            repoName = "ceph-csi";
+            repoUrl = "https://ceph.github.io/csi-charts";
+            chartName = "ceph-csi-cephfs";
+            chartVersion = "3.12.2";
+            chartHash = "sha256-O/qmg8N2ZkZ5QjOeEj7M0IyddowdD13bWGuMx9St1IU=";
+          };
+          kubernetes-version = "1.28.0";
+        };
+        rancher = final.callPackage ./builders/helm rec{
+          deploy = {
+            name = helm.chartName;
+            namespace = "cattle-system";
+          };
+          helm = {
+            repoName = "rancher-stable";
+            repoUrl = "https://releases.rancher.com/server-charts/stable";
+            chartName = "rancher";
+            chartVersion = "2.9.2";
+            chartHash = "sha256-YPTdkRoh3W9vuWkVBBrIqGQJR6Zop8LxaLBHQtjpR+4=";
+          };
+          kubernetes-version = "1.29.0";
+        };
       };
     };
 

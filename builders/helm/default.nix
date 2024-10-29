@@ -6,30 +6,29 @@
   yq-go,
   php,
   k8sapi,
-  deployName ? "ceph-csi-cephfs",
-  deployNamespace ? "ceph-csi-cephfs",
-  kubernetes-version ? "1.28.0",
-  values ? {},
-  patchFunctions ? []
+  kubernetes,
+  helm ? {},
+  deploy ? {},
+  kubernetes-version,
+  values ? {}
 }:
-
 let
   yamlPHP = 
     php.withExtensions ({ enabled, all }:
       enabled ++ [ all.yaml ]);
 in
 stdenv.mkDerivation rec{
-  pname = "ceph-csi-cephfs";
-  version = "3.12.2";
+  pname = helm.chartName;
+  version = helm.chartVersion;
 
   src = fetchHelm {
     repo = {
-      name = "ceph-csi";
-      url = "https://ceph.github.io/csi-charts";
+      name = helm.repoName;
+      url = helm.repoUrl;
     };
-    chart = "ceph-csi-cephfs";
+    chart = helm.chartName;
     inherit version;
-    hash = "sha256-O/qmg8N2ZkZ5QjOeEj7M0IyddowdD13bWGuMx9St1IU=";
+    hash = helm.chartHash;
   };
 
   nativeBuildInputs = [ kubernetes-helm yq-go ];
@@ -39,18 +38,18 @@ stdenv.mkDerivation rec{
     helm template \
       --include-crds \
       --no-hooks \
-      --namespace ${deployNamespace} \
+      --namespace ${deploy.namespace} \
       -f ${writeText "${pname}-values.json" (builtins.toJSON values)} \
       --kube-version ${kubernetes-version} \
       --output-dir ./templated \
-      ceph-csi-cephfs \
+      ${helm.chartName} \
       $src
   '';
 
   buildPhase = ''
-    yq -o json -s '.kind + "_" + .metadata.name + ".json"' templated/ceph-csi-cephfs/templates/*.yaml
+    yq -o json -s '.kind + "_" + .metadata.name + ".json"' templated/${helm.chartName}/templates/*.yaml
     cp *.json templated
-    ${yamlPHP}/bin/php ${../../swag.php} ${deployName} ./templated ${k8sapi} > enriched.json
+    ${yamlPHP}/bin/php ${../../swag.php} ${deploy.name} ./templated ${k8sapi} > enriched.json
   '';
 
   installPhase = ''
