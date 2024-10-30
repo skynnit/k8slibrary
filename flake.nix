@@ -52,8 +52,8 @@
             repoName = "prometheus-community";
             repoUrl = "https://prometheus-community.github.io/helm-charts";
             chartName = "kube-prometheus-stack";
-            chartVersion = "65.5.0";
-            chartHash = "sha256-EwEWGwG0+YYRxqnN/3ywSUdK+Oe/yfmCNOwjTIgQ8H8=";
+            chartVersion = "65.5.1";
+            chartHash = "sha256-hdlV2AxrpCOPaMaYd2N+9ECRPtdyUwyc7uTpxl2PEf0=";
           };
           kubernetes-version = "1.29.0";
         };
