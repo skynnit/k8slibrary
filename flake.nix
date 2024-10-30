@@ -45,6 +45,18 @@
           };
           kubernetes-version = "1.28.0";
         };
+        kube-prometheus-stack = final.callPackage ./builders/helm rec{
+          deployName = helm.chartName;
+          deployNamespace = helm.chartName;
+          helm = {
+            repoName = "prometheus-community";
+            repoUrl = "https://prometheus-community.github.io/helm-charts";
+            chartName = "kube-prometheus-stack";
+            chartVersion = "65.5.0";
+            chartHash = "sha256-EwEWGwG0+YYRxqnN/3ywSUdK+Oe/yfmCNOwjTIgQ8H8=";
+          };
+          kubernetes-version = "1.29.0";
+        };
         rancher = final.callPackage ./builders/helm rec{
           deployName = helm.chartName;
           deployNamespace = "cattle-system";
