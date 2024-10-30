@@ -48,7 +48,9 @@ stdenv.mkDerivation rec{
   '';
 
   buildPhase = ''
-    yq -o json -s '.kind + "_" + .metadata.name + ".json"' templated/${helm.chartName}/templates/*.yaml
+    for F in $(find templated -name '*.yaml'); do
+      yq -o json -s '.kind + "_" + .metadata.name + ".json"' $F
+    done
     cp *.json templated
     ${yamlPHP}/bin/php ${../../swag.php} ${deployName} ./templated ${k8sapi} > enriched.json
   '';
