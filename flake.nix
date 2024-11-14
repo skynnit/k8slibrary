@@ -22,6 +22,8 @@
         self.overlays.default
       ];
     };
+
+    cephCSIChartVersion = "3.12.2";
   in
   {
     inherit (pkgs) manifests lib;
@@ -40,8 +42,20 @@
             repoName = "ceph-csi";
             repoUrl = "https://ceph.github.io/csi-charts";
             chartName = "ceph-csi-cephfs";
-            chartVersion = "3.12.2";
+            chartVersion = cephCSIChartVersion;
             chartHash = "sha256-O/qmg8N2ZkZ5QjOeEj7M0IyddowdD13bWGuMx9St1IU=";
+          };
+          kubernetes-version = "1.28.0";
+        };
+        ceph-csi-rbd = final.callPackage ./builders/helm rec{
+          deployName = helm.chartName;
+          deployNamespace = helm.chartName;
+          helm = {
+            repoName = "ceph-csi";
+            repoUrl = "https://ceph.github.io/csi-charts";
+            chartName = "ceph-csi-rbd";
+            chartVersion = cephCSIChartVersion;
+            chartHash = "sha256-nJUd2Ymi94SNuDjwecJnvqA/yjiI0fddFxj08nK9ld4=";
           };
           kubernetes-version = "1.28.0";
         };
