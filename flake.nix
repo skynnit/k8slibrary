@@ -78,8 +78,8 @@
             repoName = "rancher-stable";
             repoUrl = "https://releases.rancher.com/server-charts/stable";
             chartName = "rancher";
-            chartVersion = "2.9.2";
-            chartHash = "sha256-YPTdkRoh3W9vuWkVBBrIqGQJR6Zop8LxaLBHQtjpR+4=";
+            chartVersion = "2.10.0";
+            chartHash = "sha256-FJQo/8MiA34kSYJUH6gUTShYAbE24ZN7HA5VOPccgMo=";
           };
           kubernetes-version = "1.29.0";
         };
