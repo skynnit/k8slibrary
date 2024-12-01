@@ -86,7 +86,7 @@
       };
     };
 
-    devShell.${system} = pkgs.mkShell {
+    devShells.${system}.default = pkgs.mkShell {
       buildInputs = with pkgs; [
         (php.withExtensions ({ enabled, all }:
           enabled ++ [ all.yaml ]))
