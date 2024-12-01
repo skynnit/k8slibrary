@@ -5,7 +5,7 @@
     k8sapi = {
       # 00236ae0d73d2455a2470469ed1005674f8ed61f is a random commit from the top of the kubernetes master branch
       # just to have things pinned down and not change all the time
-      url = "https://raw.githubusercontent.com/kubernetes/kubernetes/00236ae0d73d2455a2470469ed1005674f8ed61f/api/openapi-spec/swagger.json";
+      url = "https://raw.githubusercontent.com/kubernetes/kubernetes/810e9e212ec5372d16b655f57b9231d8654a2179/api/openapi-spec/swagger.json";
       flake = false;
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
@@ -23,7 +23,11 @@
       ];
     };
 
-    cephCSIChartVersion = "3.12.2";
+    cephCSI = {
+      repoName = "ceph-csi";
+      repoUrl = "https://ceph.github.io/csi-charts";
+      chartVersion = "3.12.3";
+    };
   in
   {
     inherit (pkgs) manifests lib;
@@ -39,11 +43,9 @@
           deployName = helm.chartName;
           deployNamespace = helm.chartName;
           helm = {
-            repoName = "ceph-csi";
-            repoUrl = "https://ceph.github.io/csi-charts";
             chartName = "ceph-csi-cephfs";
-            chartVersion = cephCSIChartVersion;
-            chartHash = "sha256-O/qmg8N2ZkZ5QjOeEj7M0IyddowdD13bWGuMx9St1IU=";
+            chartHash = "sha256-Y1/+xn0Klai//EMIJrS52KvZnoLP/nbHYTgSVTrJ2Nc=";
+            inherit (cephCSI) repoName repoUrl chartVersion;
           };
           kubernetes-version = "1.28.0";
         };
@@ -51,11 +53,9 @@
           deployName = helm.chartName;
           deployNamespace = helm.chartName;
           helm = {
-            repoName = "ceph-csi";
-            repoUrl = "https://ceph.github.io/csi-charts";
             chartName = "ceph-csi-rbd";
-            chartVersion = cephCSIChartVersion;
-            chartHash = "sha256-nJUd2Ymi94SNuDjwecJnvqA/yjiI0fddFxj08nK9ld4=";
+            chartHash = "sha256-SG6pwwhZOYlpLJ0f/t0IJ8HY92cnZ4OOqfdNtnYhjqY=";
+            inherit (cephCSI) repoName repoUrl chartVersion;
           };
           kubernetes-version = "1.28.0";
         };
