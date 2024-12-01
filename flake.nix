@@ -28,15 +28,17 @@
       repoUrl = "https://ceph.github.io/csi-charts";
       chartVersion = "3.12.3";
     };
+    kubevipVersion = "0.8.7";
   in
   {
-    inherit (pkgs) manifests lib;
+    inherit (pkgs) manifests lib kubevip-binary;
 
     nixosModules.swag = import ./swag.nix;
 
     overlays.default = final: prev: {
       fetchHelm = final.callPackage ./fetchers/helm {};
       inherit k8sapi;
+      kubevip-binary = final.callPackage ./pkgs/kubevip/package.nix { version = kubevipVersion; };
       manifests = {
         argocd = final.callPackage ./pkgs/argocd {};
         ceph-csi-cephfs = final.callPackage ./builders/helm rec{
@@ -71,6 +73,7 @@
           };
           kubernetes-version = "1.29.0";
         };
+        kubevip = final.callPackage ./pkgs/kubevip { version = kubevipVersion; };
         rancher = final.callPackage ./builders/helm rec{
           deployName = helm.chartName;
           deployNamespace = "cattle-system";
