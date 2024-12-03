@@ -17,4 +17,9 @@ buildGoModule rec {
     });
 
   vendorHash = "sha256-muKC4YGH924FWGUIJ0ZPB5qNSPtSvKnYS5VBWfAT81E=";
+
+  ldflags = [
+    "-X=main.Version=${version}"
+    "-X=main.Build=NixOS"
+  ];
 }
