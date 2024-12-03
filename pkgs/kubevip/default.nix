@@ -40,6 +40,7 @@ stdenv.mkDerivation rec{
       --taint \
       --controlplane \
       --services \
+      --servicesElection \
       --arp \
       --leaderElection \
       >templated/daemonset.yaml
