@@ -27,7 +27,16 @@ stdenv.mkDerivation rec{
     hash = "sha256-B6018KsDpuhPq4PjJxGHszmvzuQuqnPd9e2AoNH21tg=";
   };
 
-  dontUnpack = true;
+  unpackPhase = ''
+    cp $src ./rbac.yaml
+  '';
+
+  # Since we are using the RKE2 Addon manager on Hetzvester at the moment,
+  # and it doesn't like colon (:) in k8s object names, we need to patch the
+  # upstream kubevip rbac manifest and give roles and rolebindings new (rke2-safe) names.
+  patches = [
+    ./rbac.patch
+  ];
 
   nativeBuildInputs = [ yq-go kubevip-binary ];
 
@@ -45,7 +54,7 @@ stdenv.mkDerivation rec{
       --leaderElection \
       >templated/daemonset.yaml
 
-    cp $src templated/rbac.yaml
+    cp rbac.yaml templated/rbac.yaml
 
     yq -o json -s '.kind + "_" + .metadata.name + ".json"' templated/*.yaml
     cp *.json templated
