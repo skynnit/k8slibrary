@@ -1,4 +1,6 @@
 let
+  pkgs = import <nixpkgs> {};
+  lib = pkgs.lib;
   flake = builtins.getFlake (toString ./.);
   output = p: _: (flake.lib.evalModules {
     modules = [
@@ -14,6 +16,8 @@ let
             config.swag.lib.addConfigMapData "argocd-cm" ({ "server.insecure" = "true"; })
             ++
             config.swag.lib.removePodAntiAffinityRule "requiredDuringSchedulingIgnoredDuringExecution"
+            ++
+            config.swag.lib.addEnvironmentVariable "PATH" "/usr/local/bin:/usr/bin:/bin:/run/current-system/sw/bin"
             ++
             (config.swag.lib.addHostAliases [{
               ip = "10.0.0.1";
@@ -34,5 +38,12 @@ let
       })
     ];
   }).config.swag.apps.${p}.output;
+
+  build = n: o: pkgs.writeText "${n}.json" (builtins.toJSON (output n o));
 in
-  builtins.mapAttrs output flake.outputs.manifests
+  pkgs.runCommand "swag-test" {} ''
+    mkdir -p $out
+    ${lib.concatStringsSep "\n"
+      (lib.mapAttrsToList (n: o: "ln -s ${build n o} $out/${n}.json")
+      flake.outputs.manifests)}
+  ''

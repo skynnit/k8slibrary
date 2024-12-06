@@ -141,8 +141,18 @@ in
     }) new); };
     removePropertyPlumbing = name: obj:
       obj // { __content = builtins.removeAttrs obj.__content [name]; };
+    appendListPlumbing = property: new: old: old // {
+      __content = old.__content //
+        {
+          "${property}" = {
+            __type = "array";
+            __content = (old.__content."${property}".__content or []) ++ [new];
+          };
+        };
+    };
     removeProperty = type: property: mapAPIType type (removePropertyPlumbing property);
     setSimple = type: new: mapAPIType type (injectContent "string" new);
+    appendList = type: property: new: mapAPIType type (appendListPlumbing property new);
     setList = type: new: mapAPIType type (injectContent "array" new);
     setSimpleNamed = type: name: new: mapAPIType type (old: let oName = getMetadataName old; in if oName == name then injectContent "string" new old else old);
     setNamespace = namespace: let phrase = { inherit namespace; }; in [
@@ -152,6 +162,18 @@ in
     scale = replicas: let phrase = { replicas = assert builtins.isInt replicas; replicas; }; in [
       (setSimple "io.k8s.api.apps.v1.DeploymentSpec" phrase)
       (setSimple "io.k8s.api.apps.v1.StatefulSetSpec" phrase)
+    ];
+    addEnvironmentVariable = name: value: let phrase = { __content = {
+      name = {
+        __content = name;
+        __type = "string";
+      };
+      value = {
+        __content = value;
+        __type = "string";
+      };
+    }; __type = "object"; }; in [
+      (appendList "io.k8s.api.core.v1.Container" "env" phrase)
     ];
     addConfigMapData = name: data: let phrase = { inherit data; }; in [
       (setSimpleNamed "io.k8s.api.core.v1.ConfigMap" name phrase)
