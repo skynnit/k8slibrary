@@ -22,13 +22,24 @@ stdenv.mkDerivation rec{
   pname = deployName;
   inherit version;
 
-  src = fetchurl {
-    url = "https://kube-vip.io/manifests/rbac.yaml";
-    hash = "sha256-B6018KsDpuhPq4PjJxGHszmvzuQuqnPd9e2AoNH21tg=";
-  };
+  srcs = [
+    (fetchurl {
+      name = "rbac.yaml";
+      url = "https://kube-vip.io/manifests/rbac.yaml";
+      hash = "sha256-B6018KsDpuhPq4PjJxGHszmvzuQuqnPd9e2AoNH21tg=";
+    })
+    (fetchurl {
+      name = "cloud-controller.yaml";
+      url = "https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml";
+      hash = "sha256-PaAdaL1EdLQEeoQuHkD/dPv+bT0zmr+sNG7cxksvCrk=";
+    })
+  ];
 
   unpackPhase = ''
-    cp $src ./rbac.yaml
+    for s in $srcs; do
+      d=$(stripHash $s)
+      cp -v $s ./$d
+    done
   '';
 
   prePatch = ''
@@ -54,6 +65,7 @@ stdenv.mkDerivation rec{
     # Since we are using the RKE2 Addon manager on Hetzvester at the moment,
     # and it doesn't like colon (:) in k8s object names, we need to patch the
     # upstream kubevip rbac manifest and give roles and rolebindings new (rke2-safe) names.
+    ./cloud-controller-rbac.patch
     ./rbac.patch
   ];
 

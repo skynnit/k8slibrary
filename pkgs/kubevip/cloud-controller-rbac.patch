@@ -1,0 +1,27 @@
+diff --git a/cloud-controller.yaml b/cloud-controller.yaml
+index a307034..3807e90 100644
+--- a/cloud-controller.yaml
++++ b/cloud-controller.yaml
+@@ -9,7 +9,7 @@ kind: ClusterRole
+ metadata:
+   annotations:
+     rbac.authorization.kubernetes.io/autoupdate: "true"
+-  name: system:kube-vip-cloud-controller-role
++  name: kube-vip-cloud-controller-role
+ rules:
+   - apiGroups: ["coordination.k8s.io"]
+     resources: ["leases"]
+@@ -24,11 +24,11 @@ rules:
+ kind: ClusterRoleBinding
+ apiVersion: rbac.authorization.k8s.io/v1
+ metadata:
+-  name: system:kube-vip-cloud-controller-binding
++  name: kube-vip-cloud-controller-binding
+ roleRef:
+   apiGroup: rbac.authorization.k8s.io
+   kind: ClusterRole
+-  name: system:kube-vip-cloud-controller-role
++  name: kube-vip-cloud-controller-role
+ subjects:
+ - kind: ServiceAccount
+   name: kube-vip-cloud-controller
