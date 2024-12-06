@@ -1,0 +1,13 @@
+diff --git a/daemonset.yaml b/daemonset.yaml
+index b92133f..ca0c49d 100644
+--- a/daemonset.yaml
++++ b/daemonset.yaml
+@@ -76,7 +76,7 @@ spec:
+           value: 10.0.0.1
+         - name: prometheus_server
+           value: :2112
+-        image: ghcr.io/kube-vip/kube-vip:v0.8.7
++        image: ghcr.io/kube-vip/kube-vip-iptables:v0.8.7
+         imagePullPolicy: IfNotPresent
+         name: kube-vip
+         resources: {}
