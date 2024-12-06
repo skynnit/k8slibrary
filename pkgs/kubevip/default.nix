@@ -52,6 +52,8 @@ stdenv.mkDerivation rec{
       --servicesElection \
       --arp \
       --leaderElection \
+      --enableLoadBalancer \
+      --lbForwardingMethod masquerade \
       >templated/daemonset.yaml
 
     cp rbac.yaml templated/rbac.yaml
