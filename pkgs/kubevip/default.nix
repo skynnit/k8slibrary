@@ -26,7 +26,7 @@ stdenv.mkDerivation rec{
     (fetchurl {
       name = "rbac.yaml";
       url = "https://kube-vip.io/manifests/rbac.yaml";
-      hash = "sha256-B6018KsDpuhPq4PjJxGHszmvzuQuqnPd9e2AoNH21tg=";
+      hash = "sha256-aK1Jr2air67M4vXHWUzq39Un7Rrz3DkVjIKcZ6xvxkI=";
     })
     (fetchurl {
       name = "cloud-controller.yaml";
