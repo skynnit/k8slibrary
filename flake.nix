@@ -74,6 +74,24 @@
           kubernetes-version = "1.29.0";
         };
         kubevip = final.callPackage ./pkgs/kubevip { version = kubevipVersion; };
+        port-k8s-exporter = final.callPackage ./builders/helm rec{
+          deployName = helm.chartName;
+          deployNamespace = helm.chartName;
+          helm = {
+            repoName = "port-k8s-exporter";
+            repoUrl = "https://port-labs.github.io/helm-charts";
+            chartName = "port-k8s-exporter";
+            chartVersion = "0.2.38";
+            chartHash = "sha256-kqZRhQcdk7IEWA7CCFHzfhh1Kp9IVMInoJz3GFwPYPQ=";
+          };
+          values.secret = {
+            secrets = {
+              portClientId = "dummy";
+              portClientSecret = "dummy";
+            };
+          };
+          kubernetes-version = "1.31.0";
+        };
         rancher = final.callPackage ./builders/helm rec{
           deployName = helm.chartName;
           deployNamespace = "cattle-system";
