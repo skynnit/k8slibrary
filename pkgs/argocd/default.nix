@@ -19,13 +19,13 @@ let
 in
 stdenv.mkDerivation rec{
   pname = "argocd";
-  version = "2.13.1";
+  version = "2.13.3";
 
   src = fetchFromGitHub {
     owner = "argoproj";
     repo = "argo-cd";
     rev = "v${version}";
-    hash = "sha256-0qL9CnEwEp7sJK7u6EKHVFY/hH8lTb182HZ3r+9nIyQ=";
+    hash = "sha256-1z3tTXHVJ3e3g+DAoEGb8P6e4iEe1tiaM+7IPyuQp7U=";
   };
 
   nativeBuildInputs = [ yq-go ];
