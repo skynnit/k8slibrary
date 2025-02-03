@@ -61,6 +61,18 @@
           };
           kubernetes-version = "1.28.0";
         };
+        external-secrets = final.callPackage ./builders/helm rec{
+          deployName = helm.chartName;
+          deployNamespace = helm.chartName;
+          helm = {
+            repoName = "external-secrets";
+            repoUrl = "https://charts.external-secrets.io";
+            chartName = "external-secrets";
+            chartVersion = "0.13.0";
+            chartHash = "sha256-fI3Y3Eo5ya6o5KG4odbmAIFwSGj7yKhDojm7GvkXNks=";
+          };
+          kubernetes-version = "1.31.0";
+        };
         kube-prometheus-stack = final.callPackage ./builders/helm rec{
           deployName = helm.chartName;
           deployNamespace = helm.chartName;
