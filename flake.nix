@@ -61,6 +61,18 @@
           };
           kubernetes-version = "1.28.0";
         };
+        csi-secrets-store-provider-azure = final.callPackage ./builders/helm rec{
+          deployName = helm.chartName;
+          deployNamespace = helm.chartName;
+          helm = {
+            repoName = "csi-secrets-store-provider-azure";
+            repoUrl = "https://azure.github.io/secrets-store-csi-driver-provider-azure/charts";
+            chartName = "csi-secrets-store-provider-azure";
+            chartVersion = "1.6.1";
+            chartHash = "sha256-KoXUsNgbcAMB73kfxD+iLfB2jyEWtJa/fsNf75dwevM=";
+          };
+          kubernetes-version = "1.31.0";
+        };
         external-secrets = final.callPackage ./builders/helm rec{
           deployName = helm.chartName;
           deployNamespace = helm.chartName;
