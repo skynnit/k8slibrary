@@ -26,7 +26,7 @@
     cephCSI = {
       repoName = "ceph-csi";
       repoUrl = "https://ceph.github.io/csi-charts";
-      chartVersion = "3.12.3";
+      chartVersion = "3.13.0";
     };
     kubevipVersion = "0.8.7";
   in
@@ -46,7 +46,7 @@
           deployNamespace = helm.chartName;
           helm = {
             chartName = "ceph-csi-cephfs";
-            chartHash = "sha256-Y1/+xn0Klai//EMIJrS52KvZnoLP/nbHYTgSVTrJ2Nc=";
+            chartHash = "sha256-Y8ObauDZnlyt/THb9ZfuNXmGiaDTbZYe7ho64AkXBy4=";
             inherit (cephCSI) repoName repoUrl chartVersion;
           };
           kubernetes-version = "1.28.0";
@@ -56,7 +56,7 @@
           deployNamespace = helm.chartName;
           helm = {
             chartName = "ceph-csi-rbd";
-            chartHash = "sha256-SG6pwwhZOYlpLJ0f/t0IJ8HY92cnZ4OOqfdNtnYhjqY=";
+            chartHash = "sha256-X/W90Lrq30QOWkfQy2nebXC1BOJ+2yVMfWZvsNtXMEQ=";
             inherit (cephCSI) repoName repoUrl chartVersion;
           };
           kubernetes-version = "1.28.0";
