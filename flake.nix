@@ -28,7 +28,7 @@
       repoUrl = "https://ceph.github.io/csi-charts";
       chartVersion = "3.13.0";
     };
-    kubevipVersion = "0.8.7";
+    kubevipVersion = "0.8.9";
   in
   {
     inherit (pkgs) manifests lib kubevip-binary;
