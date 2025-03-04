@@ -4,6 +4,9 @@ $refTokenLength = strlen($refToken);
 
 function doc_name($deploy, $doc) {
   $str  = '';
+  if (!isset($doc->kind) || !isset($doc->metadata->name)) {
+    return false;
+  }
   $str  = strtolower($deploy). "-";
   $str .= strtolower($doc->kind). "-";
   $str .= $doc->metadata->name;
@@ -107,7 +110,11 @@ foreach ($files as $f) {
 
 $output = [];
 foreach ($docs as $doc) {
-  $output[doc_name($deployName, $doc)] = doc_enrich($doc);
+  $name = doc_name($deployName, $doc);
+  // ignoring all docs that doesn't have a name or kind
+  if ($name !== false) {
+    $output[doc_name($deployName, $doc)] = doc_enrich($doc);
+  }
 }
 
 echo json_encode($output);
