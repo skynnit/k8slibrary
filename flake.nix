@@ -92,10 +92,10 @@
             repoName = "prometheus-community";
             repoUrl = "https://prometheus-community.github.io/helm-charts";
             chartName = "kube-prometheus-stack";
-            chartVersion = "65.5.1";
-            chartHash = "sha256-hdlV2AxrpCOPaMaYd2N+9ECRPtdyUwyc7uTpxl2PEf0=";
+            chartVersion = "70.3.0";
+            chartHash = "sha256-HeJB3Bw7LhrW4tMZ/J5mS00CVwkdjE6hXwCf10zSElE=";
           };
-          kubernetes-version = "1.29.0";
+          kubernetes-version = "1.31.0";
         };
         kubevip = final.callPackage ./pkgs/kubevip { version = kubevipVersion; };
         port-k8s-exporter = final.callPackage ./builders/helm rec{
