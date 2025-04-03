@@ -120,11 +120,11 @@
           deployName = helm.chartName;
           deployNamespace = "cattle-system";
           helm = {
-            repoName = "rancher-stable";
-            repoUrl = "https://releases.rancher.com/server-charts/stable";
+            repoName = "rancher-latest";
+            repoUrl = "https://releases.rancher.com/server-charts/latest";
             chartName = "rancher";
-            chartVersion = "2.10.3";
-            chartHash = "sha256-Yq9pnqxy3//15ETOjeEz0rA7rxK5jC7o3fINTv/OHJQ=";
+            chartVersion = "2.11.0";
+            chartHash = "sha256-bVcRIm0XQ7xhGpM91zqebMzH2kLkzbmDxlI0fIxCCy0=";
           };
           kubernetes-version = "1.31.0";
         };
