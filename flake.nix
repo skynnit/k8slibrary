@@ -8,7 +8,7 @@
       url = "https://raw.githubusercontent.com/kubernetes/kubernetes/810e9e212ec5372d16b655f57b9231d8654a2179/api/openapi-spec/swagger.json";
       flake = false;
     };
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
   };
 
   outputs = { self, k8sapi, nixpkgs, ... }@attrs:
