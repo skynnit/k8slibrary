@@ -25,13 +25,13 @@ stdenv.mkDerivation rec{
   srcs = [
     (fetchurl {
       name = "rbac.yaml";
-      url = "https://kube-vip.io/manifests/rbac.yaml";
+      url = "https://raw.githubusercontent.com/kube-vip/website/9ad90c600e0af8748cbad25b56b8a8d630f4e2b7/content/manifests/rbac.yaml";
       hash = "sha256-aK1Jr2air67M4vXHWUzq39Un7Rrz3DkVjIKcZ6xvxkI=";
     })
     (fetchurl {
       name = "cloud-controller.yaml";
-      url = "https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml";
-      hash = "sha256-PaAdaL1EdLQEeoQuHkD/dPv+bT0zmr+sNG7cxksvCrk=";
+      url = "https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/refs/tags/v0.0.12/manifest/kube-vip-cloud-controller.yaml";
+      hash = "sha256-+sbAgNCRa452kqbJSoD9HX+9oH243BLcGH/ZhNPGyp0=";
     })
   ];
 
